@@ -66,7 +66,7 @@ if File.exist?(d_bashpf)
     FileUtils.chown uid, gid, "#{home_user}/.bash_profile"
   end
 else
-  p "#{warning} Default bash_profile doesn\'t exist."
+  puts "#{warning} Default bash_profile doesn\'t exist."
 end
 
 if !File.exist?(g_bashpf)
