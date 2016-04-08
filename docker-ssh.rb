@@ -94,8 +94,8 @@ end
 
 
 # Check if scp command
-if cmd =~ /^scp -t (.*)/
-  scp_dir = File.join($1, "")
+if cmd =~ /^scp( -r)?( -d)? -t (.*)/
+  scp_dir = File.join($3, "")
 
   @forward_dir.split(',').each do |l_dir|
     l0_dir  = File.join(l_dir, "")
