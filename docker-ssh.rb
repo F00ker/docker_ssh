@@ -151,7 +151,7 @@ else
             "#{@volume} " \
             "--net=host " \
             "--name=ssh_#{user}_#{curr_ip}_#{index} " \
-            "#{container}" \
+            "#{container} " \
             "/bin/bash -c \"#{cmd}\""
 end
 
