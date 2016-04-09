@@ -20,7 +20,7 @@ error   = "[#{red}error#{reset}]"
 
 
 # Check if argv exist
-if ARGV.length != 3
+if ARGV.length != 4
   puts "#{error} Error, bad argument please read README"
   Kernel.exit(1)
 end
@@ -30,17 +30,17 @@ end
 curr_ip   = ARGV[0].split(" ").first
 cmd       = ARGV[1]
 user      = ARGV[2]
-c_user    = "container_user"
-root_dir  = '/srv/docker-ssh'
-uid       = '10000'
+home_env  = ARGV[3]
+c_user    = '<container_user>'
+root_dir  = '/etc/docker-ssh'
+uid       = '<unix_uid>'
 gid       = nil
 conf      = "#{root_dir}/conf"
-params    = "#{conf}/user.conf"
+params    = "#{root_dir}/docker-ssh.passwd"
 d_bashrc  = "#{conf}/bashrc_default"
 d_bashpf  = "#{conf}/bash_profile_default"
 index     = 1
-home_user = "#{root_dir}/users/#{user}"
-d_repo    = nil
+home_user = "#{home_env}/docker-ssh_home_#{user}"
 
 # Check if user env exist
 if !File.exist?(home_user)
@@ -94,8 +94,8 @@ end
 
 
 # Check if scp command
-if cmd =~ /^scp( -v)?( -r)?( -d)? -t (.*)/
-  scp_dir = File.join($4, "")
+if cmd =~ /^scp( -v)?( -r)?( -d)? -(t|f) (.*)/
+  scp_dir = File.join($5, "")
 
   @forward_dir.split(',').each do |l_dir|
     l0_dir  = File.join(l_dir, "")
@@ -129,7 +129,7 @@ if !d_arr.empty?
 end
 
 # Defined docker argument
-container = "#{d_repo}/#{@tag}:ssh"
+container = "#{@tag}:ssh"
 @volume   = ""
 
 @forward_dir.split(',').each do |l_dir|
