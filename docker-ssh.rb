@@ -7,6 +7,7 @@
 
 # All require
 require 'fileutils'
+require 'logger'
 
 # Define info, warning, error
 # Call with printf
@@ -30,7 +31,7 @@ end
 curr_ip   = ARGV[0].split(" ").first
 cmd       = ARGV[1]
 user      = ARGV[2]
-home_user = "#{ARGV[3}docker-ssh#{user}"
+home_user = "#{ARGV[3]/docker-ssh_#{user}"
 root_dir  = '/etc/docker-ssh'
 conf      = "#{root_dir}/extra"
 params    = "#{root_dir}/docker-ssh.passwd"
