@@ -37,10 +37,17 @@ params    = "#{root_dir}/docker-ssh.passwd"
 d_bashrc  = "#{conf}/bashrc_default"
 d_bashpf  = "#{conf}/bash_profile_default"
 index     = 1
+log       = '/var/log/docker-ssh.log'
+logger    = Logger.new(log)
+msg_error = 'Please contact linux administrator'
+
+logger.info("Connexion established with user #{user} with IP #{curr_ip}")
+logger.info("Orginial command : #{cmd}")
 
 # Check rsync value
 if ARGV[4] =~ /^--rsync=(unix|rsyncd)$/
   rsync = $1
+  logger.info("rsync mode #{rsync} enabled")
 else
   rsync = nil
 end
@@ -48,7 +55,8 @@ end
 
 # Check if params fil exist
 if !File.exist?(params)
-  puts "#{error} Params users doesn't exist"
+  puts "#{error} #{msg_error}"
+  logger.error("Error #{params} doesn't exist")
   Kenrel.exit(1)
 end
 
@@ -68,7 +76,8 @@ c_conf  = "#{root_dir}/containers/#{@tag}/properties.conf"
 
 # Check if container params fil exist
 if !File.exist?(c_conf)
-  puts "#{error} Params container #{c_conf} doesn't exist"
+  puts "#{error} #{msg_error}"
+  logger.error("Params container #{c_conf} doesn't exist")
   Kenrel.exit(1)
 end
 
@@ -93,7 +102,8 @@ if !File.exist?(home_user)
 	FileUtils.mkdir_p home_user, :mode => 0775
 	FileUtils.chown_R @uid, @gid, home_user
 elsif !File.directory?(home_user)
-	puts "#{error} Home is not a directory."
+	puts "#{error} #{msg_error}"
+  logger.error("Home user #{home_user} is not a directory")
 	Kernel.exit(1)
 end
 
@@ -116,7 +126,8 @@ else
 end
 
 if !File.exist?(g_bashpf)
-  puts "#{error} Global bash_profile doesn\'t exist. "
+  puts "#{error} #{msg_error}"
+  logger.error("Global bash profil doesn\'t exist")
   Kernel.exit(1)
 end
 
@@ -128,18 +139,26 @@ if cmd =~ /^scp( -v)?( -r)?( -d)? -(t|f) (.*)/
   @forward_dir.split(',').each do |l_dir|
     l0_dir  = File.join(l_dir, "")
     if scp_dir =~ /^(#{l0_dir}|#{home_user}).*/
+      logger.debug("Run command : sudo -u \\##{@uid} #{cmd}")
       system( "sudo -u \\##{@uid} #{cmd}" )
       Kernel.exit(0)
     end
   end
   puts "#{error} #{scp_dir} Permission denied"
+  logger.error("Permission denied with user #{user} #{scp_dir}")
   Kernel.exit(1)
+
+elsif cmd =~ /^\/usr\/lib\/openssh\/sftp-server$/
+  logger.debug("Run command : sudo -u \\##{@uid} #{cmd}")
+  system ("sudo -u \\##{@uid} #{cmd}")
+  Kernel.exit(0)
 
 elsif cmd =~ /^rsync/
 
   # If rsync disabled (default value)
   if rsync.nil?
-    puts "#{error} Rsync disabled. Please contact system administrator"
+    logger.error("Rsync with user #{user} was reject by configuration")
+    puts "#{error} Rsync disabled. #{msg_error}"
     Kernel.exit(1)
   end
 
@@ -149,6 +168,7 @@ elsif cmd =~ /^rsync/
     rsync_cmd = cmd
   end
 
+  logger.debug("Run command : #{rsync_cmd}")
   system( rsync_cmd )
   Kernel.exit(0)
 end
@@ -201,4 +221,5 @@ else
             "/bin/bash -c \"#{cmd}\""
 end
 
+logger.debug("Run command : #{run_cmd}")
 system(run_cmd)
