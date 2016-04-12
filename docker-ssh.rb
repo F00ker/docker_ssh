@@ -31,7 +31,7 @@ end
 curr_ip   = ARGV[0].split(" ").first
 cmd       = ARGV[1]
 user      = ARGV[2]
-home_user = "#{ARGV[3]/docker-ssh_#{user}"
+home_user = "#{ARGV[3]}/docker-ssh_#{user}"
 root_dir  = '/etc/docker-ssh'
 conf      = "#{root_dir}/extra"
 params    = "#{root_dir}/docker-ssh.passwd"
@@ -124,12 +124,6 @@ if File.exist?(d_bashpf)
   end
 else
   puts "#{warning} Default bash_profile doesn\'t exist."
-end
-
-if !File.exist?(g_bashpf)
-  puts "#{error} #{msg_error}"
-  logger.error("Global bash profil doesn\'t exist")
-  Kernel.exit(1)
 end
 
 
