@@ -1,0 +1,7 @@
+/var/log/docker-ssh.log {
+    rotate 12
+    weekly
+    compress
+    missingok
+    notifempty
+}
