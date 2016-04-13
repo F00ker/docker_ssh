@@ -21,7 +21,7 @@ error   = "[#{red}error#{reset}]"
 
 
 # Check if argv exist
-if ARGV.length != 4 && ARGV.length != 5
+unless ARGV.length.between?(4, 5)
   puts "#{error} Error, bad argument please read README"
   Kernel.exit(1)
 end
