@@ -143,7 +143,7 @@ if cmd =~ /^scp( -v)?( -r)?( -d)? -(t|f) (.*)/
   logger.error("Permission denied with user #{user} #{scp_dir}")
   Kernel.exit(1)
 
-elsif cmd =~ /^\/usr\/lib\/openssh\/sftp-server$/
+elsif cmd =~ /^(\/bin\/bash -c \")?\/usr\/lib\/openssh\/sftp-server/
   logger.debug("Run command : sudo -u \\##{@uid} #{cmd}")
   system ("sudo -u \\##{@uid} #{cmd}")
   Kernel.exit(0)
@@ -199,15 +199,15 @@ end
 
 # Run container
 if cmd.empty?
-   run_cmd = "docker run --rm=true " \
-            "-v #{home_user}:/home/#{c_user} " \
-            "#{@volume} " \
-            "--net=host " \
-            "--name=ssh_#{user}_#{curr_ip}_#{index} " \
-            "#{container} " \
-            "/bin/bash"
+   run_cmd = "docker run -it --rm=true " \
+             "-v #{home_user}:/home/#{c_user} " \
+             "#{@volume} " \
+             "--net=host " \
+             "--name=ssh_#{user}_#{curr_ip}_#{index} " \
+             "#{container} " \
+             "/bin/bash"
 else
-  run_cmd = "docker run -it --rm=true " \
+  run_cmd = "docker run --rm=true " \
             "-v #{home_user}:/home/#{c_user} " \
             "#{@volume} " \
             "--net=host " \
