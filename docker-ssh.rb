@@ -218,3 +218,5 @@ end
 
 logger.debug("Run command : #{run_cmd}")
 system(run_cmd)
+
+Kernel.exit($?.exitstatus)
