@@ -31,7 +31,7 @@ end
 curr_ip   = ARGV[0].split(" ").first
 cmd       = ARGV[1]
 user      = ARGV[2]
-home_user = "#{ARGV[3]}/docker-ssh_#{user}"
+home_conf = ARGV[3]
 root_dir  = '/etc/docker-ssh'
 conf      = "#{root_dir}/extra"
 params    = "#{root_dir}/docker-ssh.passwd"
@@ -65,9 +65,14 @@ end
 # Recovery params user
 File.open(params, 'r') do |in_params|
   in_params.each_line do |l_params|
-    if l_params =~  /#{user}:(.*):(.*)/
+    if l_params =~  /#{user}:(.*):(.*):(.*)/
       @tag          = $1
-      @forward_dir  = $2
+      @forward_dir  = $3
+      if $2.nil?
+        home_user = "#{home_conf}/docker-ssh_#{user}"
+      else
+        home_user = $2
+      end
     end
   end
 end
@@ -81,6 +86,7 @@ if !File.exist?(c_conf)
   logger.error("Params container #{c_conf} doesn't exist")
   Kenrel.exit(1)
 end
+
 
 # Recovery container params
 File.open(c_conf, 'r') do |in_conf|
@@ -213,7 +219,7 @@ else
             "--net=host " \
             "--name=ssh_#{user}_#{curr_ip}_#{index} " \
             "#{container} " \
-            "/bin/bash -c \"#{cmd}\""
+            "/bin/bash -c \'#{cmd}\'"
 end
 
 logger.debug("Run command : #{run_cmd}")
