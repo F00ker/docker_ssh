@@ -131,5 +131,5 @@ sudoers_config
 printf "${warning} This script modify sshd_config and reload ssh deamon, can you validate ? [Y/n] : "
 ssh_config
 
-printf ".. Installation [${cyan}OK${reset}] \n\n"
-printf "${warning} Please remove source code in \"$(source_dir}\".\n"
+printf ".. Installation [${cyan}OK${reset}] \n"
+printf "${warning} Please remove source code in $(source_dir}.\n"
