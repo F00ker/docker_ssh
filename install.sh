@@ -13,6 +13,7 @@ error="[${red}error${reset}]"
 # Variables
 root_dir='/etc/docker-ssh'
 binary='docker-ssh.rb'
+binary_dest='/usr/local/bin/docker-ssh'
 sudoers='/etc/sudoers'
 source_script=$(dirname "${BASH_SOURCE[0]}")
 source_dir=$(readlink -f ${source_script})
@@ -83,7 +84,7 @@ printf "${info} Start install.. \n"
 
 if [[ ! -d ${root_dir} ]]
   then
-  mkdir -i ${root_dir}/{containers,extra}
+  mkdir -p ${root_dir}/{containers,extra}
   chmod 0750 ${root_dir}
   chown -R root:root ${root_dir}
 
@@ -109,9 +110,27 @@ fi
 
 if [[ -f ${binary} ]]
   then
-  cp ${binary} /usr/local/bin/docker-ssh
+  cp ${binary} ${binary_dest}
   chmod 0700 ${binary}
   chown -R root:root ${binary}
+fi
+
+
+# Check if Debian 7
+
+if [[ -f /etc/debian_version ]]
+  then
+  if [[ $(cat /etc/debian_version) =~ ^7.* ]]
+    then
+    for ruby_ver in /usr/bin/ruby*
+      do
+      version=$(basename ${ruby_ver})
+        if [[ version =~ ^ruby1.9.* ]]
+          then
+          sed -i "1 s/.*/\#\!${ruby_ver}/" ${binary_dest}
+        fi
+    done
+  fi
 fi
 
 
