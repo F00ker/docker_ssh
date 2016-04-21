@@ -31,8 +31,8 @@ sudoers_config() {
           if [[ ! -d ${sudoers}.d ]]
           then
             mkdir -p ${sudoers}.d
-            printf '%docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh' > ${sudoers}.d/docker-ssh
           fi
+          printf '%docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh' > ${sudoers}.d/docker-ssh
       else
         printf "${error} Sudoers file was not found, please add in your sudoers config : \" %docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh \" \n"
       fi
