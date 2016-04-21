@@ -132,4 +132,4 @@ printf "${warning} This script modify sshd_config and reload ssh deamon, can you
 ssh_config
 
 printf ".. Installation [${cyan}OK${reset}] \n"
-printf "${warning} Please remove source code in $(source_dir}.\n"
+printf "${warning} Please remove source code in ${source_dir}.\n"
