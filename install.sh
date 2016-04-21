@@ -11,9 +11,9 @@ warning="[${oragen}warning${reset}]"
 error="[${red}error${reset}]"
 
 # Variables
-root_dir = '/etc/docker-ssh'
-binary = 'docker-ssh.rb'
-sudoers = '/etc/sudoers'
+root_dir='/etc/docker-ssh'
+binary='docker-ssh.rb'
+sudoers='/etc/sudoers'
 
 
 # Definition
@@ -92,7 +92,7 @@ if [[ ! -d ${root_dir} ]]
     do
     if [[ -f ${i} ]]
       then
-      cp ${i} ${root_dir}/extra
+      cp ${i} ${root_dir}/extra/${i}
     else
       printf "${warning} ${i} doesn't exist, please create ${root_dir}/extra/${i}\n"
     fi
