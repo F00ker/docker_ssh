@@ -14,7 +14,7 @@ error="[${red}error${reset}]"
 root_dir='/etc/docker-ssh'
 binary='docker-ssh.rb'
 sudoers='/etc/sudoers'
-
+source_script="dirname "${BASH_SOURCE[0]}"
 
 # Definition
 
@@ -53,7 +53,7 @@ ssh_config() {
     y|Y|yes|Yes)
       cat <<EOF >> /etc/ssh/sshd_config
 Match Group docker-ssh
-   ForceCommand sudo /usr/local/bin/docker-ssh "${SSH_CONNECTION}" "${SSH_ORIGINAL_COMMAND}" "${USER}" "${HOME}""
+   ForceCommand sudo /usr/local/bin/docker-ssh "\${SSH_CONNECTION}" "\${SSH_ORIGINAL_COMMAND}" "\${USER}" "\${HOME}""
    AllowAgentForwarding no
    AllowTcpForwarding no
    PermitTunnel no
@@ -130,5 +130,5 @@ sudoers_config
 printf "${warning} This script modify sshd_config and reload ssh deamon, can you validate ? [Y/n] : "
 ssh_config
 
-printf ".. Installation [${cyan}OK${reset}] \n"
-printf "${warning} Please remove source code in $(pwd).\n"
+printf ".. Installation [${cyan}OK${reset}] \n\n"
+printf "${warning} Please remove source code in $(source_script}.\n"
