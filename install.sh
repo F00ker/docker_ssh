@@ -24,7 +24,7 @@ sudoers_config() {
   read sudoers_validate
 
   case ${sudoers_validate} in
-    y|Y|yes|Yes)
+    y|Y|yes|Yes|^$)
       if [[ -f ${sudoers} ]]
         then
         sed -i 's/#includedir \/etc\/sudoers\.d/includedir \/etc\/sudoers.d'
@@ -52,7 +52,7 @@ ssh_config() {
   read ssh_validate
 
   case ${ssh_validate} in
-    y|Y|yes|Yes)
+    y|Y|yes|Yes|^$)
       cat <<EOF >> /etc/ssh/sshd_config
 Match Group docker-ssh
    ForceCommand sudo /usr/local/bin/docker-ssh "\${SSH_CONNECTION}" "\${SSH_ORIGINAL_COMMAND}" "\${USER}" "\${HOME}""
