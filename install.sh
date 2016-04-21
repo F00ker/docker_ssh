@@ -16,6 +16,63 @@ binary = 'docker-ssh.rb'
 sudoers = '/etc/sudoers'
 
 
+# Definition
+
+sudoers_config() {
+  read sudoers_validate
+
+  case ${sudoers_validate} in
+    y|Y|yes|Yes)
+      if [[ -f ${sudoers} ]]
+        then
+        sed -i 's/#includedir \/etc\/sudoers\.d/includedir \/etc\/sudoers.d'
+          if [[ ! -d ${sudoers}.d ]]
+          then
+            mkdir -p ${sudoers}.d
+            printf '%docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh' > ${sudoers}.d/docker-ssh
+          fi
+      else
+        printf ".. ${error} sudoers file was not found, please add in your sudoers config : %docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh .."
+      fi
+    ;;
+    
+    n|N|no|No)
+    ;;
+
+    *)
+      printf "${error} Please reply Yes or No : "
+      sudoers_config
+  esac
+}
+
+ssh_config() {
+
+  read ssh_validate
+
+  case ${ssh_validate} in
+    y|Y|yes|Yes)
+      cat <<EOF >> /etc/ssh/sshd_config
+Match Group docker-ssh
+   ForceCommand sudo /usr/local/bin/docker-ssh "${SSH_CONNECTION}" "${SSH_ORIGINAL_COMMAND}" "${USER}" "${HOME}""
+   AllowAgentForwarding no
+   AllowTcpForwarding no
+   PermitTunnel no
+   X11Forwarding no
+EOF
+
+      service ssh reload
+    ;;
+
+    n|N|no|No)
+    ;;
+
+    *)
+      printf "${error} Please reply Yes or No : "
+      ssh_config
+  esac
+}
+
+
 # Main program
 
 printf "${info} Start install.. "
@@ -24,6 +81,7 @@ printf "${info} Start install.. "
 # Create config
 
 if [[ ! -d ${root_dir} ]]
+  then
   mkdir -i ${root_dir}/{containers,extra}
   chmod 0750 ${root_dir}
   chown -R root:root ${root_dir}
@@ -33,7 +91,8 @@ if [[ ! -d ${root_dir} ]]
   for i in bashrc_default bash_profile_default
     do
     if [[ -f ${i} ]]
-       cp ${i} ${root_dir}/extra
+      then
+      cp ${i} ${root_dir}/extra
     else
       printf "${warning} ${i} doesn't exist, please create ${root_dir}/extra/${i}\n"
     fi
@@ -48,6 +107,7 @@ fi
 # Copy binary
 
 if [[ -f ${binary} ]]
+  then
   cp ${binary} /usr/local/bin/docker-ssh
   chmod 0700 ${binary}
   chown -R root:root ${binary}
@@ -61,29 +121,14 @@ groupadd docker-ssh
 
 # Check sudoers conf
 
-if [[ -f ${sudoers} ]]
-  sed -i 's/#includedir \/etc\/sudoers\.d/includedir \/etc\/sudoers.d'
-  if [[ ! -d ${sudoers}.d ]]
-    mkdir -p ${sudoers}.d
-    printf '%docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh' > ${sudoers}.d/docker-ssh
-  fi
-else
-  printf ".. ${error} sudoers file was not found, please add in your sudoers config : %docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh .."
-fi
+printf "${warning} This script modify sudoers.conf, can you validate ? [Y/n] : "
+sudoers_config
 
 
 # Add ssh config
 
-cat <<EOF >> /etc/ssh/sshd_config
-Match Group docker-ssh
-   ForceCommand sudo /usr/local/bin/docker-ssh "${SSH_CONNECTION}" "${SSH_ORIGINAL_COMMAND}" "${USER}" "${HOME}""
-   AllowAgentForwarding no
-   AllowTcpForwarding no
-   PermitTunnel no
-   X11Forwarding no
-EOF
-
-service ssh reload
+printf "${warning} This script modify sshd_config and reload ssh deamon, can you validate ? [Y/n] : "
+ssh_config
 
 printf ".. [${cyan}OK${reset}\n ]"
 printf "${warning} Please remove source code in $(pwd).\n"
