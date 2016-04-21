@@ -23,8 +23,8 @@ source_dir=$(readlink -f ${source_script})
 sudoers_config() {
   read sudoers_validate
 
-  case ${sudoers_validate} in
-    y|Y|yes|Yes|^$)
+  case ${sudoers_validate,,} in
+    y|yes|"")
       if [[ -f ${sudoers} ]]
         then
         sed -i 's/#includedir \/etc\/sudoers\.d/includedir \/etc\/sudoers.d'
@@ -34,11 +34,11 @@ sudoers_config() {
             printf '%docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh' > ${sudoers}.d/docker-ssh
           fi
       else
-        printf ".. ${error} sudoers file was not found, please add in your sudoers config : %docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh .."
+        printf "${error} Sudoers file was not found, please add in your sudoers config : \" %docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh \" \n"
       fi
     ;;
     
-    n|N|no|No)
+    n|no)
     ;;
 
     *)
@@ -51,8 +51,8 @@ ssh_config() {
 
   read ssh_validate
 
-  case ${ssh_validate} in
-    y|Y|yes|Yes|^$)
+  case ${ssh_validate,,} in
+    y|yes|"")
       cat <<EOF >> /etc/ssh/sshd_config
 Match Group docker-ssh
    ForceCommand sudo /usr/local/bin/docker-ssh "\${SSH_CONNECTION}" "\${SSH_ORIGINAL_COMMAND}" "\${USER}" "\${HOME}""
@@ -65,7 +65,7 @@ EOF
       service ssh reload
     ;;
 
-    n|N|no|No)
+    n|no)
     ;;
 
     *)
