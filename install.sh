@@ -7,7 +7,7 @@ orange='\e[0;33m'
 red='\e[0;31m'
 reset='\e[0m'
 info="[${cyan}info${reset}]"
-warning="[${oragen}warning${reset}]"
+warning="[${orange}warning${reset}]"
 error="[${red}error${reset}]"
 
 # Variables
