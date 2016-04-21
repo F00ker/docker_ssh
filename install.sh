@@ -75,7 +75,7 @@ EOF
 
 # Main program
 
-printf "${info} Start install.. "
+printf "${info} Start install.. \n"
 
 
 # Create config
@@ -94,12 +94,12 @@ if [[ ! -d ${root_dir} ]]
       then
       cp ${i} ${root_dir}/extra/${i}
     else
-      printf "${warning} ${i} doesn't exist, please create ${root_dir}/extra/${i}\n"
+      printf "${warning} ${i} doesn't exist, please create ${root_dir}/extra/${i} \n"
     fi
   done
 
 else
-  printf "${info} Conf directory ${root_dir} already existing. No change made."
+  printf "${info} Conf directory ${root_dir} already existing. No change made. \n"
 fi
 
 
@@ -130,5 +130,5 @@ sudoers_config
 printf "${warning} This script modify sshd_config and reload ssh deamon, can you validate ? [Y/n] : "
 ssh_config
 
-printf ".. [${cyan}OK${reset}\n ]"
+printf ".. Installation [${cyan}OK${reset}] \n"
 printf "${warning} Please remove source code in $(pwd).\n"
