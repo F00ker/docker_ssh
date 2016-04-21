@@ -14,7 +14,8 @@ error="[${red}error${reset}]"
 root_dir='/etc/docker-ssh'
 binary='docker-ssh.rb'
 sudoers='/etc/sudoers'
-source_script="dirname "${BASH_SOURCE[0]}"
+source_script=$(dirname "${BASH_SOURCE[0]}")
+source_dir=$(readlink -f ${source_script})
 
 # Definition
 
@@ -131,4 +132,4 @@ printf "${warning} This script modify sshd_config and reload ssh deamon, can you
 ssh_config
 
 printf ".. Installation [${cyan}OK${reset}] \n\n"
-printf "${warning} Please remove source code in $(source_script}.\n"
+printf "${warning} Please remove source code in \"$(source_dir}\".\n"
