@@ -27,7 +27,7 @@ sudoers_config() {
     y|yes|"")
       if [[ -f ${sudoers} ]]
         then
-        sed -i 's/#includedir \/etc\/sudoers\.d/includedir \/etc\/sudoers.d'
+        sed -i 's/#includedir \/etc\/sudoers\.d/includedir \/etc\/sudoers.d/' ${sudoers} 
           if [[ ! -d ${sudoers}.d ]]
           then
             mkdir -p ${sudoers}.d
