@@ -1,7 +1,8 @@
 #!/bin/bash
 # Author Steffy FORT
 
-# Defintion info, warning, error
+## Defintion info, warning, error
+
 cyan='\e[0;36m'
 orange='\e[0;33m'
 red='\e[0;31m'
@@ -10,7 +11,9 @@ info="[${cyan}info${reset}]"
 warning="[${orange}warning${reset}]"
 error="[${red}error${reset}]"
 
-# Variables
+
+## Variables
+
 root_dir='/etc/docker-ssh'
 binary='docker-ssh.rb'
 binary_dest='/usr/local/bin/docker-ssh'
@@ -18,7 +21,7 @@ sudoers='/etc/sudoers'
 source_script=$(dirname "${BASH_SOURCE[0]}")
 source_dir=$(readlink -f ${source_script})
 
-# Definition
+## Definition
 
 sudoers_config() {
   read sudoers_validate
@@ -55,7 +58,7 @@ ssh_config() {
     y|yes|"")
       cat <<EOF >> /etc/ssh/sshd_config
 Match Group docker-ssh
-   ForceCommand sudo /usr/local/bin/docker-ssh "\${SSH_CONNECTION}" "\${SSH_ORIGINAL_COMMAND}" "\${USER}" "\${HOME}""
+   ForceCommand sudo /usr/local/bin/docker-ssh "\${SSH_CONNECTION}" "\${SSH_ORIGINAL_COMMAND}" "\${USER}" "\${HOME}"
    AllowAgentForwarding no
    AllowTcpForwarding no
    PermitTunnel no
@@ -75,7 +78,7 @@ EOF
 }
 
 
-# Main program
+## Main program
 
 printf "${info} Start install.. \n"
 
@@ -103,7 +106,6 @@ if [[ ! -d ${root_dir} ]]
 else
   printf "${info} Conf directory ${root_dir} already existing. No change made. \n"
 fi
-
 
 
 # Copy binary
