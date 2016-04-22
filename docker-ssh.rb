@@ -66,13 +66,13 @@ end
 File.open(params, 'r') do |in_params|
   in_params.each_line do |l_params|
     if l_params =~  /#{user}:(.*):(.*):(.*)/
-      @tag          = $1
-      @forward_dir  = $3
-      if $2.nil?
-        home_user = "#{home_conf}/docker-ssh_#{user}"
+      if $1.nil? || $1.empty?
+        @home_user = "#{home_conf}/docker-ssh_#{user}"
       else
-        home_user = $2
+        @home_user = $1
       end
+      @tag          = $2
+      @forward_dir  = $3
     end
   end
 end
@@ -105,28 +105,28 @@ end
 
 
 # Check if user env exist
-if !File.exist?(home_user)
-	FileUtils.mkdir_p home_user, :mode => 0775
-	FileUtils.chown_R @uid, @gid, home_user
-elsif !File.directory?(home_user)
+if !File.exist?(@home_user)
+	FileUtils.mkdir_p @home_user, :mode => 0775
+	FileUtils.chown_R @uid, @gid, @home_user
+elsif !File.directory?(@home_user)
 	puts "#{error} #{msg_error}"
-  logger.error("Home user #{home_user} is not a directory")
+  logger.error("Home user #{@home_user} is not a directory")
 	Kernel.exit(1)
 end
 
 if File.exist?(d_bashrc)
-  if !File.exist?("#{home_user}/.bashrc")
-    FileUtils.cp d_bashrc, "#{home_user}/.bashrc"
-    FileUtils.chown @uid, @gid, "#{home_user}/.bashrc"
+  if !File.exist?("#{@home_user}/.bashrc")
+    FileUtils.cp d_bashrc, "#{@home_user}/.bashrc"
+    FileUtils.chown @uid, @gid, "#{@home_user}/.bashrc"
   end
 else
   puts "#{warning} Default bashc doesn\'t exist."
 end
 
 if File.exist?(d_bashpf)
-  if !File.exist?("#{home_user}/.bash_profile")
-    FileUtils.cp d_bashpf, "#{home_user}/.bash_profile"
-    FileUtils.chown @uid, @gid, "#{home_user}/.bash_profile"
+  if !File.exist?("#{@home_user}/.bash_profile")
+    FileUtils.cp d_bashpf, "#{@home_user}/.bash_profile"
+    FileUtils.chown @uid, @gid, "#{@home_user}/.bash_profile"
   end
 else
   puts "#{warning} Default bash_profile doesn\'t exist."
@@ -139,7 +139,7 @@ if cmd =~ /^scp( -v)?( -r)?( -d)? -(t|f) (.*)/
 
   @forward_dir.split(',').each do |l_dir|
     l0_dir  = File.join(l_dir, "")
-    if scp_dir =~ /^(#{l0_dir}|#{home_user}).*/
+    if scp_dir =~ /^(#{l0_dir}|#{@home_user}).*/
       logger.debug("Run command : sudo -u \\##{@uid} #{cmd}")
       system( "sudo -u \\##{@uid} #{cmd}" )
       Kernel.exit(0)
@@ -206,7 +206,7 @@ end
 # Run container
 if cmd.empty?
    run_cmd = "docker run -it --rm=true " \
-             "-v #{home_user}:/home/#{c_user} " \
+             "-v #{@home_user}:/home/#{@c_user} " \
              "#{@volume} " \
              "--net=host " \
              "--name=ssh_#{user}_#{curr_ip}_#{index} " \
@@ -214,7 +214,7 @@ if cmd.empty?
              "/bin/bash"
 else
   run_cmd = "docker run --rm=true " \
-            "-v #{home_user}:/home/#{c_user} " \
+            "-v #{@home_user}:/home/#{@c_user} " \
             "#{@volume} " \
             "--net=host " \
             "--name=ssh_#{user}_#{curr_ip}_#{index} " \
