@@ -205,13 +205,14 @@ end
 
 # Run container
 if cmd.empty?
-   run_cmd = "docker run -it --rm=true " \
-             "-v #{@home_user}:/home/#{@c_user} " \
-             "#{@volume} " \
-             "--net=host " \
-             "--name=ssh_#{user}_#{curr_ip}_#{index} " \
-             "#{container} " \
-             "/bin/bash"
+  run_cmd = "docker run -it --rm=true " \
+            "-v #{@home_user}:/home/#{@c_user} " \
+            "-v #{home_conf}/.ssh:/home/#{@c_user}/.ssh " \"
+            "#{@volume} " \
+            "--net=host " \
+            "--name=ssh_#{user}_#{curr_ip}_#{index} " \
+            "#{container} " \
+            "/bin/bash"
 else
   run_cmd = "docker run --rm=true " \
             "-v #{@home_user}:/home/#{@c_user} " \

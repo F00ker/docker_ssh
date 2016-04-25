@@ -30,12 +30,11 @@ sudoers_config() {
     y|yes|"")
       if [[ -f ${sudoers} ]]
         then
-        sed -i 's/#includedir \/etc\/sudoers\.d/includedir \/etc\/sudoers.d/' ${sudoers} 
           if [[ ! -d ${sudoers}.d ]]
           then
             mkdir -p ${sudoers}.d
           fi
-          printf '%docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh' > ${sudoers}.d/docker-ssh
+          printf '%%docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh' > ${sudoers}.d/docker-ssh
       else
         printf "${error} Sudoers file was not found, please add in your sudoers config : \" %docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh \" \n"
       fi
@@ -95,9 +94,9 @@ if [[ ! -d ${root_dir} ]]
 
   for i in bashrc_default bash_profile_default
     do
-    if [[ -f ${i} ]]
+    if [[ -f "extra/${i}" ]]
       then
-      cp ${i} ${root_dir}/extra/${i}
+      cp extra/${i} ${root_dir}/extra/${i}
     else
       printf "${warning} ${i} doesn't exist, please create ${root_dir}/extra/${i} \n"
     fi
@@ -131,6 +130,7 @@ if [[ -f /etc/debian_version ]]
           then
           sed -i "1 s/.*/\#\!${ruby_ver}/" ${binary_dest}
         fi
+      printf "${warning} Check your ruby version.\n"
     done
   fi
 fi
@@ -145,6 +145,12 @@ groupadd docker-ssh
 
 printf "${warning} This script modify sudoers.conf, can you validate ? [Y/n] : "
 sudoers_config
+
+# Copy logrotate
+
+if [[ -f logrotate ]]
+  cp logrotate /etc/logrotate.d/docker-ssh
+fi
 
 
 # Add ssh config
