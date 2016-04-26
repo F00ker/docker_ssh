@@ -30,11 +30,11 @@ sudoers_config() {
     y|yes|"")
       if [[ -f ${sudoers} ]]
         then
-          if [[ ! -d ${sudoers}.d ]]
+        if [[ ! -d ${sudoers}.d ]]
           then
             mkdir -p ${sudoers}.d
-          fi
-          printf "%%docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh\n" > ${sudoers}.d/docker-ssh
+        fi
+        printf "%%docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh\n" > ${sudoers}.d/docker-ssh
       else
         printf "${error} Sudoers file was not found, please add in your sudoers config : \" %docker-ssh ALL= NOPASSWD: /usr/local/bin/docker-ssh \" \n"
       fi
@@ -149,6 +149,7 @@ sudoers_config
 # Copy logrotate
 
 if [[ -f logrotate ]]
+  then
   cp logrotate /etc/logrotate.d/docker-ssh
 fi
 
