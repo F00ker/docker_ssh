@@ -66,7 +66,7 @@ end
 # Recovery params user
 File.open(params, 'r') do |in_params|
   in_params.each_line do |l_params|
-    if l_params =~  /#{user}:(.*):(.*):(.*)/
+    if l_params =~  /^#{user}:(.*):(.*):(.*)/
       if $1.nil? || $1.empty?
         @home_user = "#{home_unix}/docker-ssh_#{user}"
       else
