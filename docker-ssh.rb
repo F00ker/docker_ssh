@@ -117,7 +117,7 @@ end
 
 if !File.exist?(ssh_user)
   FileUtils.mkdir_p ssh_user, :mode => 0775
-  FileUtils.chown_R user, ssh_user
+  FileUtils.chown user, @gid, ssh_user
 elsif !File.directory?(ssh_user)
   puts "#{warning} #{ssh_user} is not a directory"
   logger.warning("#{ssh_user} is not a directory")
