@@ -31,7 +31,8 @@ end
 curr_ip   = ARGV[0].split(" ").first
 cmd       = ARGV[1]
 user      = ARGV[2]
-home_conf = ARGV[3]
+home_unix = ARGV[3]
+ssh_user  = "#{home_unix}/.ssh"
 root_dir  = '/etc/docker-ssh'
 conf      = "#{root_dir}/extra"
 params    = "#{root_dir}/docker-ssh.passwd"
@@ -67,7 +68,7 @@ File.open(params, 'r') do |in_params|
   in_params.each_line do |l_params|
     if l_params =~  /#{user}:(.*):(.*):(.*)/
       if $1.nil? || $1.empty?
-        @home_user = "#{home_conf}/docker-ssh_#{user}"
+        @home_user = "#{home_unix}/docker-ssh_#{user}"
       else
         @home_user = $1
       end
@@ -112,6 +113,14 @@ elsif !File.directory?(@home_user)
 	puts "#{error} #{msg_error}"
   logger.error("Home user #{@home_user} is not a directory")
 	Kernel.exit(1)
+end
+
+if !File.exist?(ssh_user)
+  FileUtils.mkdir_p ssh_user, :mode => 0775
+  FileUtils.chown_R user, ssh_user
+elsif !File.directory?(ssh_user)
+  puts "#{warning} #{ssh_user} is not a directory"
+  logger.warning("#{ssh_user} is not a directory")
 end
 
 if File.exist?(d_bashrc)
@@ -207,7 +216,7 @@ end
 if cmd.empty?
   run_cmd = "docker run -it --rm=true " \
             "-v #{@home_user}:/home/#{@c_user} " \
-            "-v #{home_conf}/.ssh:/home/#{@c_user}/.ssh " \
+            "-v #{ssh_user}:/home/#{@c_user}/.ssh " \
             "#{@volume} " \
             "--net=host " \
             "--name=ssh_#{user}_#{curr_ip}_#{index} " \
@@ -216,7 +225,7 @@ if cmd.empty?
 else
   run_cmd = "docker run --rm=true " \
             "-v #{@home_user}:/home/#{@c_user} " \
-            "-v #{home_conf}/.ssh:/home/#{@c_user}/.ssh " \
+            "-v #{ssh_user}:/home/#{@c_user}/.ssh " \
             "#{@volume} " \
             "--net=host " \
             "--name=ssh_#{user}_#{curr_ip}_#{index} " \
