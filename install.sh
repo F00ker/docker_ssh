@@ -112,8 +112,8 @@ fi
 if [[ -f ${binary} ]]
   then
   cp ${binary} ${binary_dest}
-  chmod 0700 ${binary}
-  chown -R root:root ${binary}
+  chmod 0700 ${binary_dest}
+  chown -R root:root ${binary_dest}
 fi
 
 
