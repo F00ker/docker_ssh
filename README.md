@@ -51,7 +51,7 @@ If you're multi multi ruby environment, please defined the path of ruby version 
 
 Run the script install.sh (validate on Debian 7 && 8). If you're have problem with another distribution, check manualy install for validate install.
 
-## Add a conainer
+## Add a Docker images
 
 For add a container, define the configuration on */etc/docker-ssh/containers/<image_name>/properties.conf*. The directory name is the name of the Docker image. Example for image default-ssh :
 
@@ -70,11 +70,16 @@ container_user = deployuser_ssh-test
 
 properties.conf options on :
 
-  * unix_uid, the real user or uid on the server (define on the Dockerfile : RUN useradd -u <this_uid> -g 33 -m deployuser_ssh-test)
+  * unix_uid, the real user or uid on the server (define on the Dockerfile : RUN useradd -u **this_uid** -g 33 -m deployuser_ssh-test)
 
-  * unix_gid, the real group or gid on the server (define on the Dockerfile : RUN useradd -u 1001 -g <this_gid> -m deployuser_ssh-test)
+  * unix_gid, the real group or gid on the server (define on the Dockerfile : RUN useradd -u 1001 -g **this_gid** -m deployuser_ssh-test)
 
-  * container_user, the name on the docker container (define on the Dockerfile : RUN useradd -u 1001 -g 33 -m <this_user>)
+  * container_user, the name on the docker container (define on the Dockerfile : RUN useradd -u 1001 -g 33 -m **this_user**)
+
+Please when build your Docker images add the tag ssh, example :
+```bash
+-> root@test /etc/docker-ssh/containers/default-ssh docker build -t default-ssh:ssh .
+```
 
 
 ## Add user
@@ -89,7 +94,7 @@ Options on :
 
   * user, name of the user
 
-  * home, optional option, this is the directory was forwad for home user. Default value is ~/docker-ssh_user
+  * home, optional option, this is the directory was forwad for home user. Default value is ~/docker-ssh_**user_name**
 
   * container, the name of the Docker images name
 
