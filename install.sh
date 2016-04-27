@@ -90,7 +90,7 @@ if [[ ! -d ${root_dir} ]]
   chmod 0750 ${root_dir}
   chown -R root:root ${root_dir}
 
-  printf '# Example\n# bob::ssh-container:/var/log,/var/www/' > ${root_dir}/docker-ssh.passwd
+  printf '# Example\n# bob::default-ssh:/var/log,/var/www/' > ${root_dir}/docker-ssh.passwd
 
   for i in bashrc_default bash_profile_default
     do

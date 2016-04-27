@@ -207,7 +207,6 @@ end
 if cmd.empty?
   run_cmd = "docker run -it --rm=true " \
             "-v #{@home_user}:/home/#{@c_user} " \
-            "-v #{ssh_user}:/home/#{@c_user}/.ssh " \
             "#{@volume} " \
             "--net=host " \
             "--name=ssh_#{user}_#{curr_ip}_#{index} " \
@@ -216,7 +215,6 @@ if cmd.empty?
 else
   run_cmd = "docker run --rm=true " \
             "-v #{@home_user}:/home/#{@c_user} " \
-            "-v #{ssh_user}:/home/#{@c_user}/.ssh " \
             "#{@volume} " \
             "--net=host " \
             "--name=ssh_#{user}_#{curr_ip}_#{index} " \
