@@ -89,7 +89,7 @@ Options on :
 
   * user, name of the user
 
-  * home, optional option, this is the directory was forwad for home user. Default value is ~/docker-ssh_<user>
+  * home, optional option, this is the directory was forwad for home user. Default value is ~/docker-ssh_user
 
   * container, the name of the Docker images name
 
