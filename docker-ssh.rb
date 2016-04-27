@@ -32,7 +32,6 @@ curr_ip   = ARGV[0].split(" ").first
 cmd       = ARGV[1]
 user      = ARGV[2]
 home_unix = ARGV[3]
-ssh_user  = "#{home_unix}/.ssh"
 root_dir  = '/etc/docker-ssh'
 conf      = "#{root_dir}/extra"
 params    = "#{root_dir}/docker-ssh.passwd"
@@ -113,14 +112,6 @@ elsif !File.directory?(@home_user)
 	puts "#{error} #{msg_error}"
   logger.error("Home user #{@home_user} is not a directory")
 	Kernel.exit(1)
-end
-
-if !File.exist?(ssh_user)
-  FileUtils.mkdir_p ssh_user, :mode => 0775
-  FileUtils.chown @uid, @gid, ssh_user
-elsif !File.directory?(ssh_user)
-  puts "#{warning} #{ssh_user} is not a directory"
-  logger.warning("#{ssh_user} is not a directory")
 end
 
 if File.exist?(d_bashrc)
