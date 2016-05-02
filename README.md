@@ -238,3 +238,5 @@ deployuser_ssh-test@test:~$ cd /var/www/project0 && touch index.html && ls -l in
 * Ssh home configuration
 
 * Add/change/del container, user conf on script
+
+* Fork for clean exited container
