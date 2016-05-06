@@ -86,7 +86,7 @@ printf "${info} Start install.. \n"
 
 if [[ ! -d ${root_dir} ]]
   then
-  mkdir -p ${root_dir}/{containers,extra}
+  mkdir -p ${root_dir}/{images,extra}
   chmod 0750 ${root_dir}
   chown -R root:root ${root_dir}
 

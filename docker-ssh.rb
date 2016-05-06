@@ -77,7 +77,7 @@ File.open(params, 'r') do |in_params|
   end
 end
 
-c_conf  = "#{root_dir}/containers/#{@tag}/properties.conf"
+c_conf  = "#{root_dir}/images/#{@tag}/properties.conf"
 
 
 # Check if container params fil exist

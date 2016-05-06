@@ -17,7 +17,7 @@ This script require :
 Create the docker-ssh environment (directory, group, binary)
 
 ```bash
--> root@test ~ mkdir -p /etc/docker-ssh/{containers,extra} && touch /etc/docker-ssh/docker-ssh.passwd
+-> root@test ~ mkdir -p /etc/docker-ssh/{images,extra} && touch /etc/docker-ssh/docker-ssh.passwd
 
 -> root@test ~ cp docker-ssh.rb /usr/local/bin/docker-ssh && chmod 700 /usr/local/bin/docker-ssh && chown root:root /usr/local/bin/docker-ssh
 
@@ -53,7 +53,7 @@ Run the script install.sh (validate on Debian 7 && 8). If you're have problem wi
 
 ## Add a Docker images
 
-For add a container, define the configuration on */etc/docker-ssh/containers/<image_name>/properties.conf*. The directory name is the name of the Docker image. Example for image default-ssh :
+For add a container, define the configuration on */etc/docker-ssh/images/<image_name>/properties.conf*. The directory name is the name of the Docker image. Example for image default-ssh :
 
 ```bash 
 docker images               
@@ -61,7 +61,7 @@ REPOSITORY          TAG                 IMAGE ID            CREATED             
 default-ssh         ssh                 7f94494afd9a        5 days ago          243.2 MB
 debian              8                   47af6ca8a14a        3 weeks ago         125.1 MB
 
-cat /etc/docker-ssh/containers/default-ssh/properties.conf
+cat /etc/docker-ssh/images/default-ssh/properties.conf
 unix_uid = 1001
 unix_gid = 33
 container_user = deployuser_ssh-test
@@ -78,7 +78,7 @@ properties.conf options on :
 
 Please when build your Docker images add the tag ssh, example :
 ```bash
--> root@test /etc/docker-ssh/containers/default-ssh docker build -t default-ssh:ssh .
+-> root@test /etc/docker-ssh/images/default-ssh docker build -t default-ssh:ssh .
 ```
 
 
@@ -129,29 +129,29 @@ Vérification de la connectivité... fait.
 
 -> root@test ~ rm -rf docker_ssh 
 
--> root@test ~ mkdir /etc/docker-ssh/containers/default-ssh
+-> root@test ~ mkdir /etc/docker-ssh/images/default-ssh
 
--> root@test ~ cd /etc/docker-ssh/containers/default-ssh
+-> root@test ~ cd /etc/docker-ssh/images/default-ssh
 
--> root@test /etc/docker-ssh/containers/default-ssh cat properties.conf 
+-> root@test /etc/docker-ssh/images/default-ssh cat properties.conf 
 unix_uid = 1001
 unix_gid = 33
 container_user = deployuser_ssh-test
 
--> root@test /etc/docker-ssh/containers/default-ssh fgrep -i deployuser /etc/passwd
+-> root@test /etc/docker-ssh/images/default-ssh fgrep -i deployuser /etc/passwd
 deployuser:x:1001:1002::/home/deployuser:/bin/sh
 
--> root@test /etc/docker-ssh/containers/default-ssh fgrep -i 33 /etc/group
+-> root@test /etc/docker-ssh/images/default-ssh fgrep -i 33 /etc/group
 www-data:x:33:
 
--> root@test /etc/docker-ssh/containers/default-ssh docker pull debian:8
+-> root@test /etc/docker-ssh/images/default-ssh docker pull debian:8
 8: Pulling from library/debian
 efd26ecc9548: Pull complete 
 a3ed95caeb02: Pull complete 
 Digest: sha256:9b61122861071cc62760b248bea19f3d4608e6e620662c1e2f4de51f0d720149
 Status: Downloaded newer image for debian:8
 
--> root@test /etc/docker-ssh/containers/default-ssh cat Dockerfile                   
+-> root@test /etc/docker-ssh/images/default-ssh cat Dockerfile                   
 # Image based on a minimal Debian install
 # We add some tools needed by developpers
 # Also, we set a specific user used when running a container
@@ -172,14 +172,14 @@ USER deployuser_ssh-test
 
 WORKDIR /home/deployuser_ssh-test
 
--> root@test /etc/docker-ssh/containers/default-ssh docker build -t default-ssh:ssh .
+-> root@test /etc/docker-ssh/images/default-ssh docker build -t default-ssh:ssh .
 
--> root@test /etc/docker-ssh/containers/default-ssh docker images
+-> root@test /etc/docker-ssh/images/default-ssh docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 default-ssh         ssh                 7f94494afd9a        4 seconds ago       243.2 MB
 debian              8                   47af6ca8a14a        2 weeks ago         125.1 MB
 
--> root@test /etc/docker-ssh/containers/default-ssh adduser bob       
+-> root@test /etc/docker-ssh/images/default-ssh adduser bob       
 Ajout de l'utilisateur « bob » ...
 Ajout du nouveau groupe « bob » (1003) ...
 Ajout du nouvel utilisateur « bob » (1002) avec le groupe « bob » ...
@@ -197,9 +197,9 @@ Entrez la nouvelle valeur ou « Entrée » pour conserver la valeur proposée
   Autre []: 
 Cette information est-elle correcte ? [O/n]
 
--> root@test /etc/docker-ssh/containers/default-ssh usermod -G docker-ssh bob
+-> root@test /etc/docker-ssh/images/default-ssh usermod -G docker-ssh bob
 
--> root@test /etc/docker-ssh/containers/default-ssh cd /etc/docker-ssh
+-> root@test /etc/docker-ssh/images/default-ssh cd /etc/docker-ssh
 
 -> root@test /etc/docker-ssh cat docker-ssh.passwd
 # Example
