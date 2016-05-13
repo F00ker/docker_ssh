@@ -79,6 +79,14 @@ EOF
 
 ## Main program
 
+# Check if root user
+
+if [[ $UID -ne 0 ]]
+  then
+  printf "${error} Please run this script as root"
+  exit 1
+fi
+
 printf "${info} Start install.. \n"
 
 
