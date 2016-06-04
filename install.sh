@@ -134,7 +134,7 @@ if [[ -f /etc/debian_version ]]
     for ruby_ver in /usr/bin/ruby*
       do
       version=$(basename ${ruby_ver})
-        if [[ version =~ ^ruby1.9.* ]]
+        if [[ ${version} =~ ^ruby1.9.* ]]
           then
           sed -i "1 s/.*/\#\!${ruby_ver}/" ${binary_dest}
         fi

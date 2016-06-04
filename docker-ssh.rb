@@ -11,11 +11,9 @@ require 'logger'
 
 # Define info, warning, error
 # Call with printf
-cyan    = "\e[0;36m"
 orange  = "\e[0;33m"
 red     = "\e[0;31m"
 reset   = "\e[0m"
-info    = "[#{cyan}info#{reset}]"
 warning = "[#{orange}warning#{reset}]"
 error   = "[#{red}error#{reset}]"
 
